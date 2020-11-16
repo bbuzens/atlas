@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+    jmeter:
+        image: buzensb/jmeter:1.0
+        volumes:
+            - "./scripts:/var/opt/apache-jmeter-5.3/scripts"
+            - "./log:/var/opt/apache-jmeter-5.3/log"
+            - "./results:/var/opt/apache-jmeter-5.3/results"
+            - "./data:/var/opt/apache-jmeter-5.3/data"
