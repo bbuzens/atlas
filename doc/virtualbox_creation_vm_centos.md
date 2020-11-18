@@ -95,10 +95,6 @@ Et l'arrêter avec :
 docker-compose down
 ```
 
-> user : admin
->
-> pwd : admin
-
 ## Installer un conteneur Jmeter
 
 Apache ne fournit pas de conteneur officiel.
@@ -111,29 +107,29 @@ FROM alpine
 ARG JAVA_VERSION=openjdk11
 ARG JMETER_VERSION=apache-jmeter-5.3
 ARG JMETER_URL=https://downloads.apache.org//jmeter/binaries/
+ARG TEST_FILE=scripts/tst.jmx
 ENV JMETER_HOME=/opt/$JMETER_VERSION
 ENV JMETER_BIN=$JMETER_HOME/bin/
 ENV JMETER_WORKDIR=/var/opt/$JMETER_VERSION
-RUN JMETER_FILE=$JMETER_VERSION.tgz
+ENV JMETER_FILE=$JMETER_VERSION.tgz
+ENV TEST_FILE=$TEST_FILE
 RUN apk update \
-    && apk add $JAVA_VERSION
-RUN wget -P /tmp $JMETER_URL/$JMETER_FILE \
-    && tar -xzvf /tmp/$JMETER_FILE -C /opt \
-    && rm /tmp/$JMETER_FILE
-RUN freeMem=`awk '/MemFree/ { print int($2/1024) }' /proc/meminfo` \
-    && s=$(($freeMem/10*8)) \
-    && x=$(($freeMem/10*8)) \
-    && n=$(($freeMem/10*2))
-ENV JVM_ARGS="-Xmn${n}m -Xms${s}m -Xmx${x}m"
+	&& apk add $JAVA_VERSION
+RUN wget -P /tmp $JMETER_URL/$JMETER_FILE
+RUN tar -xzvf /tmp/$JMETER_FILE -C /opt
+RUN rm /tmp/$JMETER_FILE
 ENV PATH "$PATH:$JMETER_BIN"
-RUN mkdir -p $JMETER_WORKDIR/scripts $JMETER_WORKDIR/log $JMETER_WORKDIR/results $JMETER_WORKDIR/data
+COPY launch_jmeter.sh $JMETER_BIN
+RUN chmod 700 $JMETER_BIN/launch_jmeter.sh
 WORKDIR $JMETER_WORKDIR
-CMD /bin/sh
+RUN mkdir -p $JMETER_WORKDIR/scripts $JMETER_WORKDIR/log $JMETER_WORKDIR/results $JMETER_WORKDIR/data $JMETER_WORKDIR/conf
+CMD launch_jmeter.sh -n -t $TEST_FILE -j log/jmeter_$(date +"%Y%m%d_%H%M%S").log -l results/results_$(date +"%Y%m%d_%H%M%S").csv -o results/output_$(date +"%Y%m%d_%H%M%S")
+
 ```
 
 > Une source utile : https://www.blazemeter.com/blog/make-use-of-docker-with-jmeter-learn-how
 
-> On notera l'importance d'allouer un espace mémoire adapté à la JVM pour ne pas lever d'erreur du type "There is insufficient memory for the Java Runtime Environment to continue".
+On notera l'importance d'allouer un espace mémoire adapté à la JVM pour ne pas lever d'erreur du type "There is insufficient memory for the Java Runtime Environment to continue".
 
 ```shell script
 freeMem=`awk '/MemFree/ { print int($2/1024) }' /proc/meminfo`
@@ -143,6 +139,10 @@ n=$(($freeMem/10*2))
 export JVM_ARGS="-Xmn${n}m -Xms${s}m -Xmx${x}m"
 ```
 
+Une solution élégante pour gérer l'allocation mémoire au lancement de jmeter dans le conteneur est de créer un script de lancement.
+J'ai réutilisé le code présent sur le site de Blazemeter.
+Merci à son auteur.
+
 Puis, construire l'image
 
 ```shell script
@@ -150,14 +150,30 @@ docker build -t buzensb/jmeter:1.0 .
 ```
 
 Créer un fichier _docker-compose.yml_
+
 ```yaml
 version: "3.8"
 services:
     jmeter:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                - JAVA_VERSION=openjdk11
+                - JMETER_VERSION=apache-jmeter-5.3
+                - JMETER_URL=https://downloads.apache.org//jmeter/binaries/
+                - TEST_FILE=scripts/tst.jmx
         image: buzensb/jmeter:1.0
         volumes:
             - "./scripts:/var/opt/apache-jmeter-5.3/scripts"
             - "./log:/var/opt/apache-jmeter-5.3/log"
             - "./results:/var/opt/apache-jmeter-5.3/results"
             - "./data:/var/opt/apache-jmeter-5.3/data"
+
+```
+
+Lancer le conteneur avec la commande
+
+```shell script
+docker-compose up
 ```

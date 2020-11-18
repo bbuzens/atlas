@@ -1,6 +1,14 @@
 version: "3.8"
 services:
     jmeter:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                - JAVA_VERSION=openjdk11
+                - JMETER_VERSION=apache-jmeter-5.3
+                - JMETER_URL=https://downloads.apache.org//jmeter/binaries/
+                - TEST_FILE=scripts/tst.jmx
         image: buzensb/jmeter:1.0
         volumes:
             - "./scripts:/var/opt/apache-jmeter-5.3/scripts"
