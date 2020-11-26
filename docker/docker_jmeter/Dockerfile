@@ -5,7 +5,7 @@ ARG JMETER_URL=https://downloads.apache.org//jmeter/binaries/
 ARG TEST_FILE=scripts/tst.jmx
 ENV JMETER_HOME=/opt/$JMETER_VERSION
 ENV JMETER_BIN=$JMETER_HOME/bin/
-ENV JMETER_WORKDIR=/var/opt/$JMETER_VERSION
+ENV JMETER_WORKDIR=/var/opt/apache-jmeter
 ENV JMETER_FILE=$JMETER_VERSION.tgz
 ENV TEST_FILE=$TEST_FILE
 RUN apk update \

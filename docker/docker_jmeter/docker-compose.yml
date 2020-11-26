@@ -11,7 +11,7 @@ services:
                 - TEST_FILE=scripts/tst.jmx
         image: buzensb/jmeter:1.0
         volumes:
-            - "./scripts:/var/opt/apache-jmeter-5.3/scripts"
-            - "./log:/var/opt/apache-jmeter-5.3/log"
-            - "./results:/var/opt/apache-jmeter-5.3/results"
-            - "./data:/var/opt/apache-jmeter-5.3/data"
+            - "./scripts:/var/opt/apache-jmeter/scripts"
+            - "./log:/var/opt/apache-jmeter/log"
+            - "./results:/var/opt/apache-jmeter/results"
+            - "./data:/var/opt/apache-jmeter/data"

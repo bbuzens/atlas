@@ -110,7 +110,7 @@ ARG JMETER_URL=https://downloads.apache.org//jmeter/binaries/
 ARG TEST_FILE=scripts/tst.jmx
 ENV JMETER_HOME=/opt/$JMETER_VERSION
 ENV JMETER_BIN=$JMETER_HOME/bin/
-ENV JMETER_WORKDIR=/var/opt/$JMETER_VERSION
+ENV JMETER_WORKDIR=/var/opt/apache-jmeter
 ENV JMETER_FILE=$JMETER_VERSION.tgz
 ENV TEST_FILE=$TEST_FILE
 RUN apk update \
@@ -165,10 +165,10 @@ services:
                 - TEST_FILE=scripts/tst.jmx
         image: buzensb/jmeter:1.0
         volumes:
-            - "./scripts:/var/opt/apache-jmeter-5.3/scripts"
-            - "./log:/var/opt/apache-jmeter-5.3/log"
-            - "./results:/var/opt/apache-jmeter-5.3/results"
-            - "./data:/var/opt/apache-jmeter-5.3/data"
+            - "./scripts:/var/opt/apache-jmeter/scripts"
+            - "./log:/var/opt/apache-jmeter/log"
+            - "./results:/var/opt/apache-jmeter/results"
+            - "./data:/var/opt/apache-jmeter/data"
 
 ```
 
