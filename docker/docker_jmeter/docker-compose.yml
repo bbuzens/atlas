@@ -9,7 +9,7 @@ services:
                 - JMETER_VERSION=apache-jmeter-5.3
                 - JMETER_URL=https://downloads.apache.org//jmeter/binaries/
                 - TEST_FILE=scripts/tst.jmx
-        image: buzensb/jmeter:1.0
+        image: bbuzens/jmeter:1.0
         volumes:
             - "./scripts:/var/opt/apache-jmeter/scripts"
             - "./log:/var/opt/apache-jmeter/log"

@@ -36,7 +36,7 @@ yum upgrade -y
 * Suivre les instructions d'installation depuis le site Docker : https://docs.docker.com/engine/install/centos/
 * Installer Docker Compose : https://docs.docker.com/compose/install/
 
-> Configurer le proxy pour le service : 
+> Configurer le proxy pour le service : https://docs.docker.com/config/daemon/systemd/
  
 ```
 cat > /etc/systemd/system/docker.service.d/http-proxy.conf

@@ -9,10 +9,12 @@ ENV JMETER_WORKDIR=/var/opt/apache-jmeter
 ENV JMETER_FILE=$JMETER_VERSION.tgz
 ENV TEST_FILE=$TEST_FILE
 RUN apk update \
-	&& apk add $JAVA_VERSION
-RUN wget -P /tmp $JMETER_URL/$JMETER_FILE
-RUN tar -xzvf /tmp/$JMETER_FILE -C /opt
-RUN rm /tmp/$JMETER_FILE
+	&& apk add $JAVA_VERSION \
+	&& apk add curl
+RUN cd /tmp \
+    && curl -O $JMETER_URL/$JMETER_FILE \
+    && tar -xzvf /tmp/$JMETER_FILE -C /opt \
+    && rm /tmp/$JMETER_FILE
 ENV PATH "$PATH:$JMETER_BIN"
 COPY launch_jmeter.sh $JMETER_BIN
 RUN chmod 700 $JMETER_BIN/launch_jmeter.sh

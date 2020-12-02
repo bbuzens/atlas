@@ -18,7 +18,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: myjenkins-blueocean:1.1
+    image: bbuzens/jenkins-blueocean:1.1
     depends_on:
       - jenkins-docker
     networks:
