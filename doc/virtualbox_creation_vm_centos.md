@@ -20,6 +20,11 @@
 ifup enp0s3
 ```
 
+> Configurer le proxy
+> 
+> * variables d'environnement à définir dans .bashrc : http_proxy ; https_proxy ; ftp_proxy ; no_proxy
+> * yum : /etc/yum.conf => proxy=_urlDuProxy_
+
 * Mettre à jour le système
 
 ```bash
@@ -31,10 +36,26 @@ yum upgrade -y
 * Suivre les instructions d'installation depuis le site Docker : https://docs.docker.com/engine/install/centos/
 * Installer Docker Compose : https://docs.docker.com/compose/install/
 
+> Configurer le proxy pour le service : 
+ 
+```
+cat > /etc/systemd/system/docker.service.d/http-proxy.conf
+[Service]
+Environment="HTTP_PROXY=http://10.0.2.2:53128/"
+Environment="HTTPS_PROXY=http://10.0.2.2:53128/"
+Environment="NO_PROXY=127.0.0.1, localhost, *.org.in"
+```
+
+> Configurer le proxy pour les conteneurs : https://docs.docker.com/network/proxy/
+
 
 ## Installer un conteneur Jenkins
 
 * Suivre les instructions d'installation depuis le site Jenkins : https://www.jenkins.io/doc/book/installing/docker/
+
+> Configurer le proxy : Déclarer une variable d'environnement 
+> 
+> JAVA_TOOL_OPTIONS="-Dhttps.proxyHost=myproxy.server.com -Dhttps.proxyPort=8080 -Dhttp.nonProxyHosts=localhost|127.*|[::1]"
 
 > Pour simplifier l'administration de Jenkins, il est commode d'utiliser un docker-compose.
 

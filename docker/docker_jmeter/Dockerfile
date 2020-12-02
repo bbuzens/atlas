@@ -18,4 +18,4 @@ COPY launch_jmeter.sh $JMETER_BIN
 RUN chmod 700 $JMETER_BIN/launch_jmeter.sh
 WORKDIR $JMETER_WORKDIR
 RUN mkdir -p $JMETER_WORKDIR/scripts $JMETER_WORKDIR/log $JMETER_WORKDIR/results $JMETER_WORKDIR/data $JMETER_WORKDIR/conf
-CMD launch_jmeter.sh -n -t $TEST_FILE -j log/jmeter_$(date +"%Y%m%d_%H%M%S").log -l results/results_$(date +"%Y%m%d_%H%M%S").csv -o results/output_$(date +"%Y%m%d_%H%M%S")
+CMD launch_jmeter.sh -n -t $TEST_FILE -j log/jmeter_`date +"%Y%m%d_%H%M%S"`.log -l results/results_`date +"%Y%m%d_%H%M%S")`.csv -o results/output_`date +"%Y%m%d_%H%M%S"`
