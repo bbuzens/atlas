@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  pytest:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bbuzens/pytest:0.1
+    volumes:
+    - "./scripts:/var/opt/pytest/scripts"
+    - "./log:/var/opt/pytest/log"
+    - "./results:/var/opt/pytest/results"
+    - "./data:/var/opt/pytest/data"
+    command: pytest scripts --junit-xml=results/results.xml

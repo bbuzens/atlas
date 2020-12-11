@@ -1,6 +1,4 @@
 /com/
-/docker/docker_jmeter/results/
-/docker/docker_jmeter/log/
-/docker/docker_jmeter/data/
-/docker/docker_jmeter/conf/
+/docker/*/results/
+/docker/*/log/
 /.idea/

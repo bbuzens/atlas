@@ -1,5 +1,6 @@
 version: "3.8"
 services:
+  restart: always
   jenkins-docker:
     image: docker:dind
     privileged: true
