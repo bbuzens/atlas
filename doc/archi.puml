@@ -1,0 +1,65 @@
+@startuml
+component ALM [
+    Outil de gestion des tests : ALM MicroFocus
+    Assume les fonctions de :
+        * traçabilité des résultats
+        * suivi d’avancement
+        * reporting
+    ]
+
+component ORCHESTRATOR [
+    Orchestrateur : Jenkins
+    Dirige l'exécution automatisée d'une ou partie de ligne de production logicielle
+    ]
+
+component CONTAINERS [
+    Serveur de conteneurisation : Docker
+    Permet de créer et exécuter des conteneurs (sorte de systèmes virtuels)
+    Intérêt :
+        * Maîtrise du contexte d'exécution (images)
+        * Séparation des contextes
+        * Indépendant du système hôte
+        * Optimisation de l'utilisation des ressources (création/destruction en fonction du besoin)
+        * Généricité apportée par la couche de composition (docker-compose)
+        * Porteur d'une implémentation du paradigme Infrastructure as Code
+    ]
+
+component VCS [
+    Version Control System : GitLab
+    Stocke le code et ses modifications pour :
+        * scripts, données et documentation des tests
+        * code, conf et documentation des outils de test
+    ]
+
+component BRM [
+    Binary Repository Manager : JFrog Artifactory
+    Stocke les paquets de binaires pour un ensemble de technologies variées
+        * tar balls
+        * images Docker
+        * packages Python ou Java
+    ]
+
+component SUT [
+    System Under Test
+    Tout système à tester avec l'infrastructure
+    ]
+
+interface ALM_JENKINS [
+    Plugin Jenkins : Micro Focus Application Automation Tools
+    Permet d'interfacer Jenkins et ALM :
+        * Fonctions multiples (voir page du plugin et dépôt GitHub associé)
+        * Utilisation actuelle = uploadResultToALM
+    ]
+
+ALM --> ORCHESTRATOR : ?
+ALM <-- ALM_JENKINS : REST
+ALM_JENKINS -- ORCHESTRATOR : PLUGIN
+
+
+ORCHESTRATOR --> CONTAINERS : SSH
+CONTAINERS <-- VCS : PULL
+CONTAINERS --> BRM : POST
+BRM --> CONTAINERS : GET
+CONTAINERS -- SUT
+
+@enduml
