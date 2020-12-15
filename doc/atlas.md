@@ -2,6 +2,12 @@
 
 ## Schéma d'architecture
 
+### Pour le dév et le build
+
+![Architecture Dev ATLAS](archi_dev.png)
+
+### Pour le run
+
 ![Architecture ATLAS](archi.png)
 
 ## Présentation du job générique de lancement d'une campagne de test sous Jenkins

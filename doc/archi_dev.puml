@@ -1,11 +1,16 @@
 @startuml
-component ALM [
-    Outil de gestion des tests : ALM MicroFocus
-    Assume les fonctions de :
-        * traçabilité des résultats
-        * suivi d’avancement
-        * reporting
-    ]
+
+frame DESKTOP {
+    component IDE [
+        Integrated Development Environment : Celui que le dév voudra utiliser
+        ]
+    component CONTAINERS_LOCAL [
+        Serveur de conteneurs local : Docker Desktop
+        ]
+    component VCS_CLIENT [
+        Client VCS : Git
+        ]
+    }
 
 component ORCHESTRATOR [
     Orchestrateur : Jenkins
@@ -44,22 +49,17 @@ component SUT [
     Tout système à tester avec l'infrastructure
     ]
 
-interface ALM_JENKINS [
-    Plugin Jenkins : Micro Focus Application Automation Tools
-    Permet d'interfacer Jenkins et ALM :
-        * Fonctions multiples (voir page du plugin et dépôt GitHub associé)
-        * Utilisation actuelle = uploadResultToALM
-    ]
 
-ALM --> ORCHESTRATOR : ?
-ALM <-- ALM_JENKINS : REST
-ALM_JENKINS -- ORCHESTRATOR : PLUGIN
+IDE -- VCS_CLIENT : Plugin
+IDE -- CONTAINERS_LOCAL : Plugin
 
-
+VCS_CLIENT --> VCS : PULL
+CONTAINERS_LOCAL --> BRM : GET
+CONTAINERS_LOCAL --> SUT : f(SUT)
+VCS_CLIENT --> VCS : PUSH
+VCS --> ORCHESTRATOR : WebHook
 ORCHESTRATOR --> CONTAINERS : SSH
-CONTAINERS --> VCS : PULL
+VCS <-- CONTAINERS : PULL
 CONTAINERS --> BRM : POST
-BRM <-- CONTAINERS : GET
-CONTAINERS --> SUT : f(SUT)
 
 @enduml
