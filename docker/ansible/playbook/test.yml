@@ -1,7 +1,7 @@
 ---
 #- hosts: 127.0.0.1
 #  connection: local
-- hosts: docker
+- hosts: local_network
   tasks:
     - name: HTTP get Google
       get_url:

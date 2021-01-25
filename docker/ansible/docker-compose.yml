@@ -11,5 +11,5 @@ services:
     - "./results:/var/opt/ansible/results"
     - "./data:/var/opt/ansible/data"
     - "./inventory:/var/opt/ansible/inventory"
-    command: ansible-playbook -vvv -i inventory/tst.yml playbook/google_test.yml
+    command: ansible-playbook -vvv -i inventory/tst.yml playbook/test.yml
     #command: ansible-inventory -i inventory/tst.yml --host docker
