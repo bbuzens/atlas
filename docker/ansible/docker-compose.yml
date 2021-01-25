@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  ansible:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bbuzens/ansible:0.4
+    volumes:
+    - "./playbook:/var/opt/ansible/playbook"
+    - "./log:/var/opt/ansible/log"
+    - "./results:/var/opt/ansible/results"
+    - "./data:/var/opt/ansible/data"
+    - "./inventory:/var/opt/ansible/inventory"
+    command: ansible-playbook -vvv -i inventory/tst.yml playbook/google_test.yml
+    #command: ansible-inventory -i inventory/tst.yml --host docker
