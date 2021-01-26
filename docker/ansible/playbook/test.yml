@@ -1,7 +1,7 @@
 ---
 #- hosts: 127.0.0.1
 #  connection: local
-- hosts: local_network
+- hosts: tst_network
   tasks:
     - name: HTTP get Google
       get_url:
