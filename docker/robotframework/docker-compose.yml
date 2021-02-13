@@ -1,0 +1,10 @@
+version: "3.8"
+services:
+  robotframework:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bbuzens/robotframework:0.1
+    volumes:
+    - ".:/var/opt/robotframework/"
+    command: robot -x junit_report.xml .

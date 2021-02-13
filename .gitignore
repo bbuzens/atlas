@@ -2,3 +2,8 @@
 /docker/*/results/
 /docker/*/log/
 /.idea/
+/docker/robotframework/test.robot
+/docker/robotframework/junit_report.xml
+/docker/robotframework/log.html
+/docker/robotframework/output.xml
+/docker/robotframework/report.html
