@@ -1,0 +1,30 @@
+pipeline {
+    agent {
+        node {
+            label 'docker'
+        }
+    }
+    stages {
+        stage("Test") {
+            steps {
+                sh 'wget https://github.com/bbuzens/atlas/archive/master.zip'
+                sh 'unzip -o master.zip'
+                sh 'rm -f master.zip*'
+                sh 'cd atlas-master/docker/pytest; docker-compose up --build'
+            }
+
+            post {
+                // If Maven was able to run the tests, even if some of the test
+                // failed, record the test results and archive the jar file.
+                success {
+                    echo "SUCCESS"
+                    sh 'cd atlas-master/docker/pytest; docker-compose down'
+                    sh 'find . -name junit_report.xml'
+                    archiveArtifacts artifacts: '**/junit_report.xml', followSymlinks: false
+                    junit skipPublishingChecks: true, testResults: '**/junit_report.xml'
+                    uploadResultToALM almTimeout:'30', almDomain: '<DOMAIN>', almProject: '<PROJECT>', almServerName: '<SERVER_NAME>', almTestFolder: '<TEST_PLAN_FOLDER>', almTestSetFolder: '<TEST_LAB_FOLDER>', clientType: 'MyClient', credentialsId: '<ALM_CREDENTIALS>', jenkinsServerUrl: 'http://<JENKINS_SERVER>:8080', testingFramework: 'JUnit', testingResultFile: '**/junit_report.xml', testingTool: 'PyTest'
+                }
+            }
+        }
+    }
+}

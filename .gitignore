@@ -7,3 +7,4 @@
 /docker/robotframework/log.html
 /docker/robotframework/output.xml
 /docker/robotframework/report.html
+/docker/postman/junit_report.xml

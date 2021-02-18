@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  postman:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: buzensb/newman:0.3
+    volumes:
+    - ".:/var/opt/newman/"
+    #command: newman run Test.postman_collection.json
+    #working_dir: /var/opt/newman/
+    command: ./launch_postman_collections.sh
