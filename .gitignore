@@ -8,3 +8,8 @@
 /docker/robotframework/output.xml
 /docker/robotframework/report.html
 /docker/postman/junit_report.xml
+/docker/mkdocs/docs/*
+/docker/soapui/global-groovy.log
+/docker/soapui/soapui.log
+/docker/soapui/soapui-errors.log
+/docker/soapui/TEST-TestSuite_1.xml

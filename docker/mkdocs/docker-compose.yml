@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  mkdocs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: buzensb/mkdocs:0.3
+    volumes:
+    - ".:/var/opt/mkdocs/"
+    ports:
+      - target: 8000
+        published: 8888
+        protocol: tcp
+    command: mkdocs serve

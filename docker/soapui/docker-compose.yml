@@ -1,0 +1,10 @@
+version: "3.8"
+services:
+  soapui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bbuzens/soapui:0.5
+    volumes:
+    - ".:/var/opt/soapui/"
+    command: testrunner.sh -j REST-Project-1-soapui-project.xml

@@ -4,27 +4,43 @@ pipeline {
             label 'docker'
         }
     }
+    parameters {
+        string(name: 'git_tool_url', defaultValue: 'https://gitlab.gie-sv.fr/outils/outilsvalidationdin/atlas/atlas_containers/docker_robotframework.git', description: 'URL to Test tool repository')
+        string(name: 'git_tests_url', defaultValue: 'https://gitlab.gie-sv.fr/outils/outilsvalidationdin/gtc/idc/idc_smoke_tests.git', description: 'URL to tests repository?')
+        string(name: 'almDomain', defaultValue: 'FORMATION', description:'Domaine ALM du projet de test')
+        string(name: 'almProject', defaultValue: 'FORMATION', description:'Projet ALM de test vers lequel les résultats seront exportés')
+        string(name: 'almTestFolder', defaultValue: 'TmpTest', description:'Dossier du Test Plan vers lequel les tests seront exportés')
+        string(name: 'almTestSetFolder', defaultValue: 'TmpTestSet', description:'Dossier du Test Lab vers lequel les résultats seront exportés')
+    }
     stages {
+        stage('CleanWorkspace') {
+            steps {
+                cleanWs()
+            }
+        }
+        stage('GetToolAndTests'){
+            steps {
+                git credentialsId: 'AD_GIE', url: "${params.git_tool_url}"
+                stash name: "workspace", includes: "**"
+                cleanWs()
+                git credentialsId: 'AD_GIE', url: "${params.git_tests_url}"
+                unstash name: "workspace"
+            }
+        }
         stage("Test") {
             steps {
-                sh 'wget https://github.com/bbuzens/atlas/archive/master.zip'
-                sh 'unzip -o master.zip'
-                sh 'rm -f master.zip*'
-                sh 'cd atlas-master/docker/pytest; docker-compose up --build'
+                sh 'docker-compose up --build'
             }
-
-            post {
-                // If Maven was able to run the tests, even if some of the test
-                // failed, record the test results and archive the jar file.
-                success {
-                    echo "SUCCESS"
-                    sh 'cd atlas-master/docker/pytest; docker-compose down'
-                    sh 'find . -name junit_report.xml'
-                    archiveArtifacts artifacts: '**/junit_report.xml', followSymlinks: false
-                    junit skipPublishingChecks: true, testResults: '**/junit_report.xml'
-                    uploadResultToALM almTimeout:'30', almDomain: '<DOMAIN>', almProject: '<PROJECT>', almServerName: '<SERVER_NAME>', almTestFolder: '<TEST_PLAN_FOLDER>', almTestSetFolder: '<TEST_LAB_FOLDER>', clientType: 'MyClient', credentialsId: '<ALM_CREDENTIALS>', jenkinsServerUrl: 'http://<JENKINS_SERVER>:8080', testingFramework: 'JUnit', testingResultFile: '**/junit_report.xml', testingTool: 'PyTest'
-                }
-            }
+        }
+    }
+    post {
+        always {
+            sh 'docker-compose down'
+            archiveArtifacts artifacts: '**', followSymlinks: false
+        }
+        success {
+            junit healthScaleFactor: 0.0, skipPublishingChecks: true, testResults: '**/junit_report.xml'
+            uploadResultToALM almTimeout:'30', almDomain: "${params.almDomain}", almProject: "${params.almProject}", almServerName: 'QC GIE', almTestFolder: "${params.almTestFolder}", almTestSetFolder: "${params.almTestSetFolder}", clientType: 'MyClient', credentialsId: 'AD_GIE', jenkinsServerUrl: 'http://pc-buzensb.sesam.loc:8080', testingFramework: 'JUnit', testingResultFile: '**/junit_report.xml', testingTool: 'PyTest'
         }
     }
 }
